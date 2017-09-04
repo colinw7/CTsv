@@ -28,20 +28,17 @@ class CTsv {
   void setFirstLineHeader(bool b) { firstLineHeader_ = b; }
 
   bool load() {
-    bool commentHeader   = commentHeader_;
-    bool firstLineHeader = firstLineHeader_;
+    bool commentHeader   = isCommentHeader  ();
+    bool firstLineHeader = isFirstLineHeader();
 
     data_.clear();
 
-    FILE *fp = fopen(filename().c_str(), "r");
-    if (! fp) return false;
+    if (! open())
+      return false;
 
-    while (! feof(fp)) {
-      std::string line;
+    std::string line;
 
-      if (! readLine(fp, line))
-        break;
-
+    while (readLine(line)) {
       if (line.empty())
         continue;
 
@@ -86,12 +83,26 @@ class CTsv {
       data_.push_back(fields);
     }
 
-    fclose(fp);
+    close();
 
     return true;
   }
 
  private:
+  bool open() const {
+    fp_ = fopen(filename_.c_str(), "r");
+    if (! fp_) return false;
+
+    return true;
+  }
+
+  void close() const {
+    if (fp_)
+      fclose(fp_);
+
+    fp_ = 0;
+  }
+
   bool isComment(const std::string &line, std::string &comment) {
     int i = 0;
 
@@ -109,17 +120,20 @@ class CTsv {
     return true;
   }
 
-  bool readLine(FILE *fp, std::string &line) {
+  bool readLine(std::string &line) {
     line = "";
 
-    if (feof(fp)) return false;
+    if (feof(fp_)) return false;
 
-    char c = fgetc(fp);
+    char c = fgetc(fp_);
 
-    while (! feof(fp) && c != '\n') {
+    if (c == EOF)
+      return false;
+
+    while (! feof(fp_) && c != '\n') {
       line += c;
 
-      c = fgetc(fp);
+      c = fgetc(fp_);
     }
 
     return true;
@@ -168,11 +182,12 @@ class CTsv {
   }
 
  private:
-  std::string filename_;
-  Fields      header_;
-  Data        data_;
-  bool        commentHeader_  { true };
-  bool        firstLineHeader_ { false };
+  std::string   filename_;
+  Fields        header_;
+  Data          data_;
+  bool          commentHeader_   { true };
+  bool          firstLineHeader_ { false };
+  mutable FILE* fp_              { 0 };
 };
 
 #endif
