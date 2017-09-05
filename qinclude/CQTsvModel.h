@@ -2,6 +2,7 @@
 #define CQTsvModel_H
 
 #include <QAbstractItemModel>
+#include <vector>
 
 class CQTsvModel : public QAbstractItemModel {
   Q_OBJECT
