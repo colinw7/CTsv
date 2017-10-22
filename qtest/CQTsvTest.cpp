@@ -65,8 +65,8 @@ load(const QString &filename)
 {
   model_ = new CQTsvModel;
 
-  //if (isHeader())
-  //  model_->setColumnHeaders(true);
+  if (isHeader())
+    model_->setCommentHeader(true);
 
   model_->load(filename);
 
