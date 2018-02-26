@@ -1,22 +1,23 @@
 #ifndef CQTsvTable_H
 #define CQTsvTable_H
 
-#include <QTableView>
+#include <CQTableView.h>
 
 class CQTsvModel;
-class CQHeaderView;
+class QSortFilterProxyModel;
 
-class CQTsvTable : public QTableView {
+class CQTsvTable : public CQTableView {
   Q_OBJECT
 
  public:
   CQTsvTable(QWidget *parent=nullptr);
+ ~CQTsvTable();
 
   void setModel(CQTsvModel *model);
 
  private:
-  CQTsvModel*   model_  { nullptr };
-  CQHeaderView* header_ { nullptr };
+  CQTsvModel*            model_ { nullptr };
+  QSortFilterProxyModel* proxy_ { nullptr };
 };
 
 #endif

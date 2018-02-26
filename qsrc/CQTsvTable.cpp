@@ -1,23 +1,33 @@
 #include <CQTsvTable.h>
 #include <CQTsvModel.h>
-#include <CQHeaderView.h>
+
+#include <QHeaderView>
+#include <QSortFilterProxyModel>
 
 CQTsvTable::
 CQTsvTable(QWidget *parent) :
- QTableView(parent)
+ CQTableView(parent)
 {
   setObjectName("table");
 
-  setAlternatingRowColors(true);
+  setSortingEnabled(true);
 
-  header_ = new CQHeaderView(this);
+  horizontalHeader()->setSectionsClickable(true);
 
-  setHorizontalHeader(header_);
+  proxy_ = new QSortFilterProxyModel;
+}
+
+CQTsvTable::
+~CQTsvTable()
+{
+  delete proxy_;
 }
 
 void
 CQTsvTable::
 setModel(CQTsvModel *model)
 {
-  QTableView::setModel(model);
+  proxy_->setSourceModel(model);
+
+  QTableView::setModel(proxy_);
 }
