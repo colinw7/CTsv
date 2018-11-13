@@ -8,13 +8,15 @@ CQTsvTable::
 CQTsvTable(QWidget *parent) :
  CQTableView(parent)
 {
-  setObjectName("table");
+  setObjectName("tsvTable");
 
   setSortingEnabled(true);
 
   horizontalHeader()->setSectionsClickable(true);
 
   proxy_ = new QSortFilterProxyModel;
+
+  proxy_->setObjectName("tsvTableProxy");
 }
 
 CQTsvTable::
