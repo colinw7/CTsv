@@ -11,7 +11,7 @@ class CTsv {
   typedef std::vector<Fields>      Data;
 
  public:
-  CTsv(const std::string &filename) :
+  CTsv(const std::string &filename="") :
    filename_(filename) {
   }
 
@@ -91,6 +91,10 @@ class CTsv {
     return true;
   }
 
+  bool stringToColumns(const std::string &str, Fields &columns) {
+    return stringToFields(str, columns);
+  }
+
  private:
   bool open() const {
     fp_ = fopen(filename_.c_str(), "r");
@@ -134,7 +138,19 @@ class CTsv {
       return false;
 
     while (! feof(fp_) && c != '\n') {
-      line += c;
+      if (c == '\\') {
+        c = fgetc(fp_);
+
+        switch (c) {
+          case  'n': line += '\n'; break;
+          case  't': line += '\t'; break;
+          case  'r': line += '\r'; break;
+          case '\\': line += '\\'; break;
+          default  : line += '\\'; line += c; break;
+        }
+      }
+      else
+        line += c;
 
       c = fgetc(fp_);
     }
