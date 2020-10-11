@@ -114,6 +114,12 @@ load(const QString &filename)
 
   //---
 
+  // if columns specified filter and reorder data by columns
+  if (columns_.length())
+    applyFilterColumns(columns_);
+
+  //---
+
   // clear column types
   resetColumnTypes();
 
@@ -249,7 +255,6 @@ QString
 CQTsvModel::
 encodeString(const QString &str)
 {
-  // TODO: handle tab in string
   QString str1;
 
   int len = str.length();
