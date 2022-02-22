@@ -61,7 +61,7 @@ load(const QString &filename)
 
   // expand horizontal header to max number of columns
   for (const auto &fields : data) {
-    int numFields = fields.size();
+    int numFields = int(fields.size());
 
     if (isFirstColumnHeader())
       --numFields;
@@ -108,7 +108,7 @@ load(const QString &filename)
   //---
 
   // expand vertical header to max number of rows
-  int numRows = data_.size();
+  int numRows = int(data_.size());
 
   while (int(vheader_.size()) < numRows)
     vheader_.push_back("");
@@ -233,21 +233,14 @@ encodeVariant(const QVariant &var) const
 {
   std::string str;
 
-  if      (var.type() == QVariant::Double) {
-    double r = var.value<double>();
-
-    str = std::to_string(r);
-  }
-  else if (var.type() == QVariant::Int) {
-    int i = var.value<int>();
-
-    str = std::to_string(i);
-  }
-  else {
-    auto qstr = var.toString();
-
-    str = encodeString(qstr).toStdString();
-  }
+  if      (var.type() == QVariant::Double)
+    str = std::to_string(var.toDouble());
+  else if (var.type() == QVariant::Int)
+    str = std::to_string(var.toInt());
+  else if (var.type() == QVariant::LongLong)
+    str = std::to_string(var.toLongLong());
+  else
+    str = encodeString(var.toString()).toStdString();
 
   return str;
 }

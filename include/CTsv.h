@@ -115,14 +115,14 @@ class CTsv {
 
     skipSpace(line, i);
 
-    if (line[i] != '#')
+    if (line[size_t(i)] != '#')
       return false;
 
     ++i;
 
     skipSpace(line, i);
 
-    comment = line.substr(i);
+    comment = line.substr(size_t(i));
 
     return true;
   }
@@ -146,11 +146,11 @@ class CTsv {
           case  't': line += '\t'; break;
           case  'r': line += '\r'; break;
           case '\\': line += '\\'; break;
-          default  : line += '\\'; line += c; break;
+          default  : line += '\\'; line += char(c); break;
         }
       }
       else
-        line += c;
+        line += char(c);
 
       c = fgetc(fp_);
     }
@@ -160,7 +160,7 @@ class CTsv {
 
   bool stringToFields(const std::string &str, Fields &fields) {
     int i   = 0;
-    int len = str.size();
+    int len = int(str.size());
 
     if (! isAllowEmpty())
       skipSpace(str, i);
@@ -173,18 +173,18 @@ class CTsv {
 
       // add (optionally non-empty) word
       if (isAllowEmpty() || i > j) {
-        std::string str1 = str.substr(j, i - j);
+        std::string str1 = str.substr(size_t(j), size_t(i - j));
 
         // add to return list
         fields.push_back(str1);
       }
 
       if (isAllowEmpty()) {
-        if (str[i] == '\t')
+        if (str[size_t(i)] == '\t')
           ++i;
       }
       else {
-        while (i < len && str[i] == '\t')
+        while (i < len && str[size_t(i)] == '\t')
           ++i;
       }
     }
@@ -193,16 +193,16 @@ class CTsv {
   }
 
   void skipSpace(const std::string &str, int &i) {
-    int len = str.size();
+    int len = int(str.size());
 
-    while (i < len && isspace(str[i]))
+    while (i < len && isspace(str[size_t(i)]))
       ++i;
   }
 
   void skipToTab(const std::string &str, int &i) {
-    int len = str.size();
+    int len = int(str.size());
 
-    while (i < len && str[i] != '\t')
+    while (i < len && str[size_t(i)] != '\t')
       ++i;
   }
 
