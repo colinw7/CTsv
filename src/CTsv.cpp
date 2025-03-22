@@ -96,7 +96,7 @@ close() const
   if (fp_)
     fclose(fp_);
 
-  fp_ = 0;
+  fp_ = nullptr;
 }
 
 bool
